@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SI-LATERA | Laboratorium Terpadu UIN Sunan Kalijaga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE7D9;
+    --paper-2:#E4DCC8;
+    --line: rgba(18,24,28,0.10);
+    --line-strong: rgba(18,24,28,0.22);
+    --ink:#12181C;
+    --panel:#161E24;
+    --panel-2:#1E2830;
+    --text-light:#EDE7D9;
+    --text-muted:#93A2A9;
+    --amber:#E0983A;
+    --amber-dim: rgba(224,152,58,0.16);
+    --teal:#3E8E8A;
+    --teal-dim: rgba(62,142,138,0.14);
+    --rust:#BD5A3E;
+    --rust-dim: rgba(189,90,62,0.14);
+    --ok:#5F9E6E;
+    --ok-dim: rgba(95,158,110,0.14);
+    --radius: 3px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:15px;
+    line-height:1.55;
+  }
+  h1,h2,h3,h4{
+    font-family:'IBM Plex Serif', serif;
+    margin:0 0 .4em 0;
+    font-weight:600;
+    letter-spacing:-.01em;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* ===== Topbar ===== */
+  .topbar{
+    background:var(--panel);
+    color:var(--text-light);
+    border-bottom:1px solid rgba(237,231,217,0.08);
+    position:sticky; top:0; z-index:50;
+  }
+  .topbar-inner{
+    max-width:1160px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand-mark{
+    width:34px; height:34px; flex-shrink:0;
+  }
+  .brand-text .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.14em;
+    color:var(--amber); text-transform:uppercase; margin-bottom:2px;
+  }
+  .brand-text .name{font-family:'IBM Plex Serif',serif; font-size:16px; font-weight:600; line-height:1.2;}
+  .brand-text .sub{font-size:11px; color:var(--text-muted);}
+
+  nav.tabs{
+    display:flex; gap:2px; background:var(--panel-2); padding:3px; border-radius:4px;
+    flex-wrap:wrap;
+  }
+  nav.tabs button{
+    background:transparent; border:none; color:var(--text-muted);
+    padding:8px 13px; font-size:12.5px; font-weight:500; cursor:pointer;
+    border-radius:3px; letter-spacing:.01em; white-space:nowrap;
+    transition:background .15s, color .15s;
+  }
+  nav.tabs button:hover{color:var(--text-light);}
+  nav.tabs button.active{background:var(--amber); color:var(--ink); font-weight:600;}
+
+  /* ===== Sections ===== */
+  section.view{display:none; animation:fadein .25s ease;}
+  section.view.active{display:block;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .wrap{max-width:1160px; margin:0 auto; padding:0 24px;}
+
+  /* ===== Hero ===== */
+  .hero{
+    background:var(--panel); color:var(--text-light);
+    position:relative; overflow:hidden;
+    padding:56px 0 40px;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(237,231,217,0.035) 0px, rgba(237,231,217,0.035) 1px, transparent 1px, transparent 28px),
+      repeating-linear-gradient(90deg, rgba(237,231,217,0.035) 0px, rgba(237,231,217,0.035) 1px, transparent 1px, transparent 28px);
+  }
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--amber); margin-bottom:14px;
+  }
+  .hero h1{font-size:clamp(28px,4vw,42px); max-width:680px; color:#fff;}
+  .hero p.lead{color:var(--text-muted); max-width:560px; font-size:15.5px; margin-top:10px;}
+  .hero-stats{display:flex; gap:10px; flex-wrap:wrap; margin-top:26px;}
+  .stat-chip{
+    border:1px solid rgba(237,231,217,0.16); border-radius:3px; padding:8px 12px;
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--text-light);
+    background:rgba(237,231,217,0.03);
+  }
+  .stat-chip b{color:var(--amber);}
+
+  .spectrum-wrap{margin-top:38px;}
+  .spectrum-wrap svg{width:100%; height:auto; display:block;}
+  .axis-label{font-family:'IBM Plex Mono',monospace; font-size:10px; fill:var(--text-muted); letter-spacing:.05em;}
+  .peak-label{font-family:'IBM Plex Mono',monospace; font-size:9.5px; fill:var(--text-muted);}
+
+  /* ===== Generic content blocks ===== */
+  .page-header{padding:38px 0 22px; border-bottom:1px solid var(--line);}
+  .page-header .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal);
+    margin-bottom:8px;
+  }
+  .page-header h2{font-size:26px;}
+  .page-header p{color:#565f63; max-width:640px; margin:0;}
+
+  .content{padding:32px 0 64px;}
+
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px;
+  }
+
+  /* Steps (real sequential process) */
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:36px;}
+  .step{
+    border:1px solid var(--line-strong); border-radius:var(--radius); padding:16px 16px 18px;
+    background:#fff; position:relative;
+  }
+  .step .num{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--amber); font-weight:600;
+    display:block; margin-bottom:10px;
+  }
+  .step h4{font-size:14.5px; margin-bottom:6px;}
+  .step p{font-size:12.8px; color:#5a6367; margin:0;}
+  .step:not(:last-child)::after{
+    content:"→"; position:absolute; right:-19px; top:18px; color:var(--line-strong); font-size:14px;
+  }
+
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  thead th{
+    text-align:left; font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:#6b7478; padding:9px 12px; border-bottom:1px solid var(--line-strong);
+    background:var(--paper-2);
+  }
+  tbody td{padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tbody tr:hover{background:rgba(224,152,58,0.05);}
+
+  .badge{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+    padding:3px 8px; border-radius:2px; letter-spacing:.02em;
+  }
+  .badge.ok{background:var(--ok-dim); color:#3d6b48;}
+  .badge.warn{background:var(--amber-dim); color:#8a5a1c;}
+  .badge.bad{background:var(--rust-dim); color:#8a3d28;}
+  .badge.info{background:var(--teal-dim); color:#245a57;}
+  .badge.neutral{background:rgba(18,24,28,0.06); color:#6b7478;}
+
+  .prodi-tag{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:600; letter-spacing:.03em;
+    padding:2px 7px; border-radius:2px; background:var(--paper-2); color:#5a6367; border:1px solid var(--line-strong);
+    white-space:nowrap;
+  }
+
+  /* Reagen praktikum cards (reuses accordion pattern) */
+  .exp-card{border:1px solid var(--line-strong); border-radius:var(--radius); background:#fff; overflow:hidden; margin-bottom:14px;}
+  .exp-card summary{list-style:none; cursor:pointer; padding:18px 20px; display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;}
+  .exp-card summary::-webkit-details-marker{display:none;}
+  .exp-card .id-code{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--teal); letter-spacing:.06em; display:block; margin-bottom:4px;}
+  .exp-card summary h4{font-size:15.5px; margin:0 0 4px;}
+  .exp-card .meta{font-size:12px; color:#6b7478;}
+  .exp-card .toggle{font-family:'IBM Plex Mono',monospace; color:var(--amber); font-size:18px; flex-shrink:0;}
+  .exp-card[open] .toggle{transform:rotate(45deg);}
+  .exp-card .body{padding:0 20px 20px; border-top:1px solid var(--line); padding-top:14px;}
+  .readiness{flex-shrink:0;}
+
+  .toolbar{display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center;}
+  .toolbar input, .toolbar select{
+    border:1px solid var(--line-strong); background:#fff; padding:9px 12px; border-radius:3px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--ink);
+  }
+  .toolbar input{flex:1; min-width:180px;}
+  .table-wrap{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:#fff;}
+
+  /* Jadwal */
+  .schedule{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); background:#fff;}
+  .schedule table{min-width:820px;}
+  .schedule td.slot{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#6b7478; white-space:nowrap;}
+  .cell-course{font-weight:600; font-size:12.8px;}
+  .cell-lab{font-size:11.5px; color:#6b7478; display:block; margin-top:2px;}
+  .empty-slot{color:#c3bda9; font-size:12px;}
+
+  /* Layanan Pengujian cards */
+  .instrument-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px;}
+  .instrument{
+    border:1px solid var(--line-strong); border-radius:var(--radius); background:#fff; overflow:hidden;
+  }
+  .instrument summary{
+    list-style:none; cursor:pointer; padding:18px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  .instrument summary::-webkit-details-marker{display:none;}
+  .instrument .id-code{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--teal); letter-spacing:.06em; display:block; margin-bottom:4px;
+  }
+  .instrument summary h4{font-size:15.5px; margin:0;}
+  .instrument .toggle{font-family:'IBM Plex Mono',monospace; color:var(--amber); font-size:18px; flex-shrink:0;}
+  .instrument[open] .toggle{transform:rotate(45deg);}
+  .instrument .body{padding:0 20px 20px; border-top:1px solid var(--line);}
+  .instrument .body{padding-top:14px;}
+  .spec-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px 20px; margin:14px 0;}
+  .spec-grid .k{font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8a938a; text-transform:uppercase; letter-spacing:.05em;}
+  .spec-grid .v{font-size:13px; margin-top:2px;}
+  .req-btn{
+    margin-top:8px; background:var(--ink); color:#fff; border:none; padding:9px 16px; border-radius:3px;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .req-btn:hover{background:var(--teal);}
+
+  /* Forms */
+  form.mockform{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+  form.mockform .full{grid-column:1/-1;}
+  form.mockform label{display:block; font-size:12px; font-weight:600; margin-bottom:5px; color:#3d4548;}
+  form.mockform input, form.mockform select, form.mockform textarea{
+    width:100%; border:1px solid var(--line-strong); border-radius:3px; padding:9px 11px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:13px; background:#fff; color:var(--ink);
+  }
+  form.mockform textarea{resize:vertical; min-height:64px;}
+  .submit-row{grid-column:1/-1; display:flex; align-items:center; gap:14px; margin-top:4px;}
+  .submit-btn{
+    background:var(--amber); color:var(--ink); border:none; padding:11px 22px; border-radius:3px;
+    font-weight:700; font-size:13px; cursor:pointer;
+  }
+  .submit-btn:hover{background:#c98426;}
+  .confirm-msg{font-size:12.8px; color:var(--teal); font-weight:600; display:none;}
+  .confirm-msg.show{display:inline-flex; align-items:center; gap:6px;}
+
+  .note-box{
+    border-left:3px solid var(--teal); background:var(--teal-dim); padding:12px 16px; font-size:12.8px;
+    color:#245a57; border-radius:0 3px 3px 0; margin-top:22px;
+  }
+
+  footer{
+    background:var(--panel); color:var(--text-muted); padding:34px 0; margin-top:40px;
+    border-top:1px solid rgba(237,231,217,0.08);
+  }
+  footer .foot-inner{display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; font-size:12.5px;}
+  footer .eyebrow{font-family:'IBM Plex Mono',monospace; color:var(--amber); font-size:10px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px;}
+  footer strong{color:var(--text-light);}
+
+  @media(max-width:860px){
+    .steps{grid-template-columns:1fr 1fr;}
+    .step:not(:last-child)::after{display:none;}
+    .instrument-grid{grid-template-columns:1fr;}
+    form.mockform{grid-template-columns:1fr;}
+    .spec-grid{grid-template-columns:1fr 1fr;}
+    .reagen-input-form{grid-template-columns:1fr 1fr !important;}
+    .reagen-input-form div[style*="span 2"]{grid-column:span 2 !important;}
+  }
+  @media(max-width:560px){
+    .steps{grid-template-columns:1fr;}
+    .hero-stats{gap:8px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    section.view{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 34 34" fill="none">
+        <rect width="34" height="34" rx="4" fill="#1E2830"/>
+        <path d="M13 8h8M14 8v6.5L9.5 24a2 2 0 0 0 1.8 2.9h11.4a2 2 0 0 0 1.8-2.9L20 14.5V8" stroke="#E0983A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 20h10" stroke="#3E8E8A" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <div class="brand-text">
+        <div class="eyebrow">SI-LATERA</div>
+        <div class="name">Laboratorium Terpadu</div>
+        <div class="sub">UIN Sunan Kalijaga Yogyakarta</div>
+      </div>
+    </div>
+    <nav class="tabs" id="tabNav">
+      <button data-target="beranda" class="active">Beranda</button>
+      <button data-target="peminjaman">Peminjaman Alat</button>
+      <button data-target="bahan">Bahan Kimia</button>
+      <button data-target="jadwal">Jadwal Praktikum</button>
+      <button data-target="reagen">Reagen Praktikum</button>
+      <button data-target="pengujian">Layanan Pengujian</button>
+      <button data-target="rekap" id="rekapNavBtn" style="display:none;">Rekapitulasi</button>
+      <button data-target="admin" id="adminNavBtn" style="display:none;">Panel Admin</button>
+      <button data-target="kontak">Kontak</button>
+    </nav>
+    <div id="authWidget" style="display:flex; align-items:center; gap:8px;">
+      <button id="loginOpenBtn" style="background:transparent; border:1px solid rgba(237,231,217,0.25); color:var(--text-light); padding:7px 12px; border-radius:3px; font-size:12px; cursor:pointer;">Login Staf</button>
+    </div>
+  </div>
+
+  <div id="loginPanel" style="display:none; background:var(--panel-2); border-top:1px solid rgba(237,231,217,0.08);">
+    <div class="wrap" style="padding:16px 24px; display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+      <div>
+        <label style="display:block; font-size:11px; color:var(--text-muted); margin-bottom:4px;">Email</label>
+        <input type="email" id="loginEmail" placeholder="email@labuinsuka.test" style="padding:8px 10px; border-radius:3px; border:1px solid rgba(237,231,217,0.2); background:var(--panel); color:var(--text-light); font-size:12.5px;">
+      </div>
+      <div>
+        <label style="display:block; font-size:11px; color:var(--text-muted); margin-bottom:4px;">Password</label>
+        <input type="password" id="loginPassword" style="padding:8px 10px; border-radius:3px; border:1px solid rgba(237,231,217,0.2); background:var(--panel); color:var(--text-light); font-size:12.5px;">
+      </div>
+      <button id="loginSubmitBtn" class="submit-btn" type="button">Masuk</button>
+      <span id="loginError" style="display:none; color:#e08a6f; font-size:12px;">Email/password salah.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========== BERANDA ========== -->
+<section class="view active" id="beranda">
+  <div class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Sistem Informasi Laboratorium</div>
+      <h1>Satu pintu untuk peminjaman alat, stok bahan, jadwal praktikum, dan pengujian sampel.</h1>
+      <p class="lead">Laboratorium Terpadu UIN Sunan Kalijaga melayani praktikum, penelitian mahasiswa/dosen, dan pengujian sampel eksternal dengan delapan instrumen analitik utama, di bawah kendali mutu ISO 17025.</p>
+      <div class="hero-stats">
+        <div class="stat-chip"><b>8</b> instrumen analitik</div>
+        <div class="stat-chip"><b>08.00–15.00</b> WIB, Senin–Jumat</div>
+        <div class="stat-chip"><b>ISO/IEC 17025</b> quality assurance</div>
+        <div class="stat-chip"><b>H+3</b> estimasi rata-rata hasil uji</div>
+      </div>
+
+      <div class="spectrum-wrap">
+        <svg viewBox="0 0 1000 190" preserveAspectRatio="none">
+          <!-- baseline axis -->
+          <line x1="20" y1="150" x2="980" y2="150" stroke="rgba(237,231,217,0.18)" stroke-width="1"/>
+          <text x="20" y="172" class="axis-label">4000</text>
+          <text x="230" y="172" class="axis-label">3000</text>
+          <text x="450" y="172" class="axis-label">2000</text>
+          <text x="650" y="172" class="axis-label">1500</text>
+          <text x="880" y="172" class="axis-label">750</text>
+          <text x="900" y="172" class="axis-label">cm⁻¹</text>
+          <!-- spectrum trace: transmittance-style with dips at peaks -->
+          <path d="M20,60
+                   C120,58 160,58 190,56
+                   C220,54 235,110 255,120
+                   C270,127 285,60 300,58
+                   C360,55 400,56 430,54
+                   C455,52 470,95 485,102
+                   C500,108 515,60 540,58
+                   C580,56 610,57 630,55
+                   C650,53 660,40 675,35
+                   C690,30 700,65 715,72
+                   C730,78 745,60 770,58
+                   C800,56 830,90 845,100
+                   C860,108 872,60 890,58
+                   C920,56 950,57 980,55"
+                fill="none" stroke="#E0983A" stroke-width="2.2" stroke-linecap="round"/>
+          <!-- peak markers -->
+          <line x1="255" y1="120" x2="255" y2="150" stroke="rgba(224,152,58,0.35)" stroke-dasharray="2,3"/>
+          <text x="230" y="132" class="peak-label">O–H str.</text>
+          <line x1="485" y1="102" x2="485" y2="150" stroke="rgba(224,152,58,0.35)" stroke-dasharray="2,3"/>
+          <text x="460" y="115" class="peak-label">C=O str.</text>
+          <line x1="675" y1="35" x2="675" y2="150" stroke="rgba(62,142,138,0.4)" stroke-dasharray="2,3"/>
+          <text x="655" y="26" class="peak-label">C–H bend</text>
+          <line x1="845" y1="100" x2="845" y2="150" stroke="rgba(224,152,58,0.35)" stroke-dasharray="2,3"/>
+          <text x="822" y="113" class="peak-label">C–O str.</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap content">
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="font-size:17px;">Tentang Laboratorium</h3>
+      <p style="color:#464e51; font-size:13.8px; max-width:760px;">
+        Laboratorium Terpadu UIN Sunan Kalijaga Yogyakarta menyediakan layanan praktikum, riset, dan pengujian
+        sampel kimia bagi sivitas akademika maupun instansi/perorangan di luar kampus. Empat menu utama di situs
+        ini &mdash; peminjaman alat, ketersediaan bahan kimia, jadwal praktikum, dan layanan pengujian &mdash;
+        dirancang agar pengguna dapat mengecek status dan mengajukan permohonan tanpa harus datang langsung
+        ke laboratorium terlebih dahulu.
+      </p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px;" id="beranda-shortcuts"></div>
+  </div>
+</section>
+
+<!-- ========== PEMINJAMAN ALAT ========== -->
+<section class="view" id="peminjaman">
+  <div class="wrap">
+    <div class="page-header">
+      <div class="eyebrow">Peminjaman &amp; Penggunaan Alat</div>
+      <h2>Alur peminjaman alat laboratorium</h2>
+      <p>Alat penunjang praktikum dan penelitian (bukan instrumen pengujian utama) dapat dipinjam mengikuti empat tahap berikut. Status alat diperbarui oleh teknisi setiap hari kerja.</p>
+    </div>
+
+    <div class="content">
+      <div class="steps">
+        <div class="step">
+          <span class="num">01 — Pengajuan</span>
+          <h4>Ajukan permohonan</h4>
+          <p>Isi formulir peminjaman di bawah, lampirkan surat pengantar dari dosen pembimbing/prodi.</p>
+        </div>
+        <div class="step">
+          <span class="num">02 — Verifikasi</span>
+          <h4>Cek ketersediaan</h4>
+          <p>Teknisi memverifikasi jadwal pemakaian alat dan mengonfirmasi slot waktu peminjaman.</p>
+        </div>
+        <div class="step">
+          <span class="num">03 — Serah terima</span>
+          <h4>Ambil alat</h4>
+          <p>Peminjam dan teknisi mengisi checklist kondisi alat sebelum dibawa keluar/digunakan.</p>
+        </div>
+        <div class="step">
+          <span class="num">04 — Pengembalian</span>
+          <h4>Kembalikan &amp; evaluasi</h4>
+          <p>Kondisi alat dicek kembali, peminjam mengisi laporan singkat pemakaian.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="alatSearch" placeholder="Cari nama alat...">
+        <select id="alatFilter">
+          <option value="">Semua status</option>
+          <option value="Tersedia">Tersedia</option>
+          <option value="Dipakai">Dipakai</option>
+          <option value="Perawatan">Perawatan</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nama Alat</th><th>Kategori</th><th>Lokasi</th><th>Status</th></tr></thead>
+          <tbody id="alatTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="card" style="margin-top:28px;">
+        <h3 style="font-size:16px;">Formulir Peminjaman Alat</h3>
+        <p style="font-size:12.8px; color:#5a6367; margin:4px 0 0;">Setelah diajukan, gunakan formulir "Cek Status" di bawah untuk memantau apakah permohonan sudah disetujui teknisi.</p>
+        <form class="mockform" id="formAlat">
+          <div>
+            <label>Nama Peminjam</label>
+            <input type="text" id="alatNamaPeminjam" placeholder="Nama lengkap" required>
+          </div>
+          <div>
+            <label>NIM / NIP</label>
+            <input type="text" id="alatNimNip" placeholder="Nomor identitas" required>
+          </div>
+          <div>
+            <label>Alat yang Dipinjam</label>
+            <select id="selectAlat" required></select>
+          </div>
+          <div>
+            <label>Tanggal Penggunaan</label>
+            <input type="date" id="alatTanggal" required>
+          </div>
+          <div>
+            <label>Jam Mulai</label>
+            <input type="time" id="alatJamMulai" required>
+          </div>
+          <div>
+            <label>Jam Selesai</label>
+            <input type="time" id="alatJamSelesai" required>
+          </div>
+          <div class="full">
+            <label>Keperluan</label>
+            <textarea id="alatKeperluan" placeholder="Contoh: preparasi sampel penelitian skripsi"></textarea>
+          </div>
+          <div class="submit-row">
+            <button type="submit" class="submit-btn">Ajukan Peminjaman</button>
+            <span class="confirm-msg" id="confirmAlat">✓ Permohonan diajukan, menunggu verifikasi teknisi.</span>
+          </div>
+        </form>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3 style="font-size:16px;">Cek Status Peminjaman</h3>
+        <p style="font-size:12.8px; color:#5a6367; margin:4px 0 0;">Masukkan NIM/NIP dan tanggal penggunaan yang sama seperti waktu mengajukan permohonan.</p>
+        <form class="mockform" id="formCekStatus" style="grid-template-columns:1fr 1fr auto;">
+          <div><label>NIM / NIP</label><input type="text" id="cekNimNip" required></div>
+          <div><label>Tanggal Penggunaan</label><input type="date" id="cekTanggal" required></div>
+          <div class="submit-row" style="margin-top:0;"><button type="submit" class="submit-btn" style="height:38px;">Cek Status</button></div>
+        </form>
+        <div id="cekStatusResult" style="margin-top:14px;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== BAHAN KIMIA ========== -->
+<section class="view" id="bahan">
+  <div class="wrap">
+    <div class="page-header">
+      <div class="eyebrow">Ketersediaan Bahan Kimia</div>
+      <h2>Stok bahan kimia per program studi</h2>
+      <p>Lab Kimia melayani 5 program studi (Kimia, Pendidikan Kimia, Biologi, Sains Biomedis, Teknik Industri). Bahan yang sama bisa dimiliki lebih dari satu prodi dengan stok, lokasi, dan status terpisah sesuai sumber pengadaannya.</p>
+    </div>
+    <div class="content">
+      <div class="toolbar">
+        <input type="text" id="bahanSearch" placeholder="Cari nama bahan / kategori...">
+        <select id="bahanProdiFilter">
+          <option value="">Semua Program Studi</option>
+        </select>
+        <select id="bahanFilter">
+          <option value="">Semua status</option>
+          <option value="Tersedia">Tersedia</option>
+          <option value="Menipis">Menipis</option>
+          <option value="Habis">Habis</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nama Bahan</th><th>Grade</th><th>Kategori</th><th>Program Studi</th><th>Jumlah/Stok</th><th>Lokasi</th><th>Tgl Pengadaan</th><th>Status</th></tr></thead>
+          <tbody id="bahanTableBody"></tbody>
+        </table>
+      </div>
+      <div class="note-box">
+        Satu bahan dapat muncul di beberapa baris jika dimiliki oleh lebih dari satu prodi (pengadaan/anggaran terpisah, meski kadang disimpan di rak yang sama). Data ini contoh; integrasikan dengan sistem inventaris agar ter-update otomatis oleh teknisi per prodi.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== JADWAL PRAKTIKUM ========== -->
+<section class="view" id="jadwal">
+  <div class="wrap">
+    <div class="page-header">
+      <div class="eyebrow">Jadwal Praktikum</div>
+      <h2>Jadwal penggunaan ruang &amp; laboratorium mingguan</h2>
+      <p>Jadwal berlaku selama semester berjalan. Perubahan jadwal insidental akan diumumkan terpisah oleh koordinator praktikum.</p>
+    </div>
+    <div class="content">
+      <div class="schedule">
+        <table>
+          <thead>
+            <tr><th style="width:110px;">Jam</th><th>Senin</th><th>Selasa</th><th>Rabu</th><th>Kamis</th><th>Jumat</th></tr>
+          </thead>
+          <tbody id="jadwalTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== REAGEN PRAKTIKUM ========== -->
+<section class="view" id="reagen">
+  <div class="wrap">
+    <div class="page-header">
+      <div class="eyebrow">Persiapan Reagen Praktikum</div>
+      <h2>Ketersediaan reagen per judul percobaan</h2>
+      <p>Reagen kerja diracik oleh asisten laboratorium untuk tiap judul percobaan praktikum, terpisah dari stok bahan baku di halaman Bahan Kimia. Karena reagen racikan umumnya tidak stabil lama, setiap item dilacak tanggal pembuatan dan batas pakainya.</p>
+    </div>
+    <div class="content">
+      <div class="toolbar">
+        <input type="text" id="reagenSearch" placeholder="Cari judul percobaan...">
+        <select id="reagenProdiFilter">
+          <option value="">Semua Program Studi</option>
+        </select>
+      </div>
+      <div id="reagenList"></div>
+      <div class="note-box">
+        Status kedaluwarsa dihitung otomatis dari tanggal hari ini terhadap batas pakai reagen. Asisten pembuat reagen bertanggung jawab memperbarui data setiap kali meracik ulang untuk judul percobaan tertentu.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== LAYANAN PENGUJIAN ========== -->
+<section class="view" id="pengujian">
+  <div class="wrap">
+    <div class="page-header">
+      <div class="eyebrow">Layanan Pengujian Sampel</div>
+      <h2>Delapan instrumen analitik utama</h2>
+      <p>Klik masing-masing instrumen untuk melihat parameter uji, preparasi sampel, estimasi waktu pengerjaan, dan tarif layanan.</p>
+    </div>
+    <div class="content">
+      <div class="instrument-grid" id="instrumentGrid"></div>
+
+      <div class="card" style="margin-top:28px;">
+        <h3 style="font-size:16px;">Formulir Pengajuan Pengujian</h3>
+        <form class="mockform" id="formUji">
+          <div>
+            <label>Nama Pemohon</label>
+            <input type="text" id="ujiNama" placeholder="Nama lengkap / instansi" required>
+          </div>
+          <div>
+            <label>Kontak (No. HP/Email)</label>
+            <input type="text" id="ujiKontak" placeholder="08xx / email@domain.com" required>
+          </div>
+          <div>
+            <label>Kategori Pemohon</label>
+            <select id="ujiKategori" required>
+              <option value="internal">Internal (Mahasiswa/Dosen UIN)</option>
+              <option value="eksternal">Eksternal (Instansi/Industri Luar)</option>
+            </select>
+          </div>
+          <div>
+            <label>Jenis Pengujian</label>
+            <select id="selectUji" required></select>
+          </div>
+          <div>
+            <label>Jumlah Sampel</label>
+            <input type="number" id="ujiJumlah" min="1" value="1" required>
+          </div>
+          <div class="full">
+            <label>Keterangan Sampel</label>
+            <textarea id="ujiKeterangan" placeholder="Contoh: campuran padatan asam sitrat–asam tartarat, ± 2 gram, dalam vial tertutup"></textarea>
+          </div>
+          <div class="submit-row">
+            <button type="submit" class="submit-btn">Kirim Pengajuan</button>
+            <span class="confirm-msg" id="confirmUji">✓ Pengajuan diterima.</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== REKAPITULASI ========== -->
+<section class="view" id="rekap">
+  <div class="wrap">
+    <div class="page-header">
+      <div class="eyebrow">Internal — Koordinator Lab</div>
+      <h2>Rekapitulasi layanan pengujian</h2>
+      <p>Dihitung otomatis dari data pengajuan pengujian yang masuk lewat halaman Layanan Pengujian — tidak perlu direkap manual.</p>
+    </div>
+    <div class="content">
+
+      <div class="card" id="rekapGate" style="max-width:420px;">
+        <h3 style="font-size:15px;">Akses Khusus Admin</h3>
+        <p style="font-size:12.5px; color:#5a6367; margin:4px 0 0;">Halaman ini hanya bisa dibaca oleh akun dengan role <b>admin</b>, ditegakkan oleh Row Level Security di database — bukan sekadar disembunyikan di tampilan.</p>
+        <div class="note-box" style="margin-top:16px;">
+          Silakan klik <b>Login Staf</b> di pojok kanan atas dan masuk dengan akun admin untuk melihat rekapitulasi ini.
+        </div>
+      </div>
+
+      <div id="rekapContent" style="display:none;">
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;">
+          <div class="card"><div class="spec-grid .k" style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8a938a; text-transform:uppercase;">Total Pendapatan</div><div id="rekapTotal" style="font-family:'IBM Plex Serif',serif; font-size:22px; margin-top:6px;">Rp 0</div></div>
+          <div class="card"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8a938a; text-transform:uppercase;">Total Transaksi</div><div id="rekapCount" style="font-family:'IBM Plex Serif',serif; font-size:22px; margin-top:6px;">0</div></div>
+          <div class="card"><div style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8a938a; text-transform:uppercase;">Rata-rata per Transaksi</div><div id="rekapAvg" style="font-family:'IBM Plex Serif',serif; font-size:22px; margin-top:6px;">Rp 0</div></div>
+        </div>
+
+        <h3 style="font-size:15px; margin-bottom:10px;">Pendapatan per Instrumen</h3>
+        <div class="table-wrap" style="margin-bottom:26px;">
+          <table>
+            <thead><tr><th>Instrumen</th><th>Jumlah Sampel</th><th>Jumlah Transaksi</th><th>Total Pendapatan</th></tr></thead>
+            <tbody id="rekapPerInstrumen"></tbody>
+          </table>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="font-size:15px; margin:0;">Riwayat Transaksi</h3>
+          <button type="button" id="rekapDownloadBtn" class="req-btn">Unduh CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Instrumen</th><th>Kategori</th><th>Pemohon</th><th>Jml Sampel</th><th>Keterangan Sampel</th><th>Total</th></tr></thead>
+            <tbody id="rekapRiwayat"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== PANEL ADMIN ========== -->
+<section class="view" id="admin">
+  <div class="wrap">
+    <div class="page-header">
+      <div class="eyebrow">Internal — Admin</div>
+      <h2>Panel Admin</h2>
+      <p>Kelola data master laboratorium langsung dari sini, tanpa perlu membuka dashboard Supabase.</p>
+    </div>
+    <div class="content">
+
+      <!-- ALAT -->
+      <details class="exp-card" open>
+        <summary>
+          <div><span class="id-code">Kelola</span><h4>Alat Laboratorium</h4></div>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="body">
+          <form class="mockform" id="adminFormAlat">
+            <div><label>Nama Alat</label><input type="text" name="nama" required></div>
+            <div><label>Kategori</label><input type="text" name="kategori" placeholder="mis. Preparasi"></div>
+            <div><label>Lokasi</label><input type="text" name="lokasi" placeholder="mis. Ruang Preparasi 1"></div>
+            <div>
+              <label>Status</label>
+              <select name="status">
+                <option value="Tersedia">Tersedia</option>
+                <option value="Dipakai">Dipakai</option>
+                <option value="Perawatan">Perawatan</option>
+              </select>
+            </div>
+            <div class="submit-row"><button type="submit" class="submit-btn">Tambah Alat</button></div>
+          </form>
+          <div class="table-wrap" style="margin-top:16px;">
+            <table>
+              <thead><tr><th>Nama</th><th>Kategori</th><th>Lokasi</th><th>Status</th><th></th></tr></thead>
+              <tbody id="adminAlatBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- VERIFIKASI PEMINJAMAN -->
+      <details class="exp-card" open>
+        <summary>
+          <div><span class="id-code">Verifikasi</span><h4>Pengajuan Peminjaman Alat</h4></div>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="body">
+          <p style="font-size:12.5px; color:#5a6367; margin:0 0 10px;">Ubah status tiap pengajuan, lalu klik Simpan. Pemohon bisa mengecek status ini sendiri lewat halaman Peminjaman Alat.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Peminjam</th><th>Alat</th><th>Tanggal &amp; Jam</th><th>Keperluan</th><th>Status</th><th></th></tr></thead>
+              <tbody id="adminVerifikasiBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- BAHAN KIMIA -->
+      <details class="exp-card">
+        <summary>
+          <div><span class="id-code">Kelola</span><h4>Bahan Kimia &amp; Kepemilikan Prodi</h4></div>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="body">
+          <p style="font-size:12.5px; color:#5a6367; margin:0 0 10px;">Ketik nama bahan yang sudah ada untuk menambah kepemilikan prodi baru, atau ketik nama baru untuk membuat bahan sekaligus kepemilikannya.</p>
+          <form class="mockform" id="adminFormBahan">
+            <datalist id="dlAdminBahan"></datalist>
+            <div class="full"><label>Nama Bahan</label><input list="dlAdminBahan" name="nama" required></div>
+            <div><label>Grade</label><input type="text" name="grade" placeholder="mis. p.a. / teknis"></div>
+            <div><label>Kategori</label><input type="text" name="kategori" placeholder="mis. Asam Organik"></div>
+            <div>
+              <label>Program Studi Pemilik</label>
+              <select name="prodi" id="adminBahanProdi" required></select>
+            </div>
+            <div><label>Jumlah</label><input type="number" step="any" name="jumlah" required></div>
+            <div><label>Satuan</label>
+              <select name="satuan"><option>mL</option><option>L</option><option>g</option><option>kg</option></select>
+            </div>
+            <div><label>Lokasi</label><input type="text" name="lokasi"></div>
+            <div><label>Tanggal Pengadaan</label><input type="date" name="tanggal"></div>
+            <div>
+              <label>Status</label>
+              <select name="status">
+                <option value="Tersedia">Tersedia</option>
+                <option value="Menipis">Menipis</option>
+                <option value="Habis">Habis</option>
+              </select>
+            </div>
+            <div class="submit-row"><button type="submit" class="submit-btn">Simpan Bahan</button></div>
+          </form>
+          <div class="table-wrap" style="margin-top:16px;">
+            <table>
+              <thead><tr><th>Nama</th><th>Grade</th><th>Kategori</th><th>Prodi</th><th>Stok</th><th>Lokasi</th><th>Tgl</th><th>Status</th><th></th></tr></thead>
+              <tbody id="adminBahanBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- JADWAL PRAKTIKUM -->
+      <details class="exp-card">
+        <summary>
+          <div><span class="id-code">Kelola</span><h4>Jadwal Praktikum</h4></div>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="body">
+          <form class="mockform" id="adminFormJadwal">
+            <div>
+              <label>Hari</label>
+              <select name="hari">
+                <option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option>
+              </select>
+            </div>
+            <div><label>Jam Mulai</label><input type="time" name="jamMulai" required></div>
+            <div><label>Jam Selesai</label><input type="time" name="jamSelesai" required></div>
+            <div><label>Mata Kuliah</label><input type="text" name="matkul" required></div>
+            <div>
+              <label>Program Studi</label>
+              <select name="prodi" id="adminJadwalProdi" required></select>
+            </div>
+            <div><label>Lab</label><input type="text" name="lab" placeholder="mis. Lab Instrumen A"></div>
+            <div class="submit-row"><button type="submit" class="submit-btn">Tambah Jadwal</button></div>
+          </form>
+          <div class="table-wrap" style="margin-top:16px;">
+            <table>
+              <thead><tr><th>Hari</th><th>Jam</th><th>Mata Kuliah</th><th>Prodi</th><th>Lab</th><th></th></tr></thead>
+              <tbody id="adminJadwalBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- PERCOBAAN PRAKTIKUM -->
+      <details class="exp-card">
+        <summary>
+          <div><span class="id-code">Kelola</span><h4>Judul Percobaan Praktikum</h4></div>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="body">
+          <p style="font-size:12.5px; color:#5a6367; margin:0 0 10px;">Menghapus judul percobaan otomatis menghapus data reagen yang tercatat di dalamnya.</p>
+          <form class="mockform" id="adminFormPercobaan">
+            <div class="full"><label>Judul Percobaan</label><input type="text" name="judul" required></div>
+            <div class="full"><label>Mata Kuliah</label><input type="text" name="matkul"></div>
+            <div class="full">
+              <label>Program Studi Terkait (bisa lebih dari satu)</label>
+              <div id="adminPercobaanProdiChecks" style="display:flex; gap:14px; flex-wrap:wrap; margin-top:4px;"></div>
+            </div>
+            <div class="submit-row"><button type="submit" class="submit-btn">Tambah Percobaan</button></div>
+          </form>
+          <div class="table-wrap" style="margin-top:16px;">
+            <table>
+              <thead><tr><th>Judul</th><th>Mata Kuliah</th><th>Prodi</th><th></th></tr></thead>
+              <tbody id="adminPercobaanBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- KELOLA PENGGUNA -->
+      <details class="exp-card">
+        <summary>
+          <div><span class="id-code">Kelola</span><h4>Pengguna (Asisten &amp; Admin)</h4></div>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="body">
+          <div class="note-box">
+            Membuat <b>akun baru</b> (email + password) masih dilakukan lewat dashboard Supabase:
+            <b>Authentication → Users → Add user</b> (centang "Auto Confirm User"). Setelah akun dibuat,
+            klik <b>Segarkan Daftar</b> di bawah ini untuk menemukannya, lalu atur nama dan role-nya dari sini —
+            tidak perlu SQL Editor lagi untuk langkah ini.
+          </div>
+          <div class="toolbar" style="margin-top:14px;">
+            <button type="button" class="req-btn" id="adminRefreshUsersBtn">Segarkan Daftar</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nama Lengkap</th><th>Role</th><th style="width:90px;"></th></tr></thead>
+              <tbody id="adminUsersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== KONTAK ========== -->
+<section class="view" id="kontak">
+  <div class="wrap">
+    <div class="page-header">
+      <div class="eyebrow">Kontak</div>
+      <h2>Hubungi Laboratorium Terpadu</h2>
+      <p>Untuk konsultasi teknis pengujian, kunjungan, atau kerja sama penelitian.</p>
+    </div>
+    <div class="content">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="card">
+          <h3 style="font-size:15.5px;">Alamat</h3>
+          <p style="font-size:13px; color:#464e51;">Gedung Laboratorium Terpadu<br>UIN Sunan Kalijaga Yogyakarta<br>Jl. Marsda Adisucipto, Yogyakarta, Daerah Istimewa Yogyakarta</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15.5px;">Jam Layanan</h3>
+          <p style="font-size:13px; color:#464e51;">Senin – Jumat, 08.00 – 15.00 WIB<br>Istirahat: 12.00 – 13.00 WIB<br>Tutup pada hari libur nasional/akademik</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15.5px;">Kontak Teknis</h3>
+          <p style="font-size:13px; color:#464e51;">Email: laboratorium.terpadu@uin-suka.ac.id<br>WhatsApp Layanan: 08xx-xxxx-xxxx<br>Koordinator: Teknisi Piket Harian</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15.5px;">Kebijakan Mutu</h3>
+          <p style="font-size:13px; color:#464e51;">Sistem manajemen mutu mengacu pada ISO/IEC 17025. Ketertelusuran hasil uji didukung oleh bahan acuan bersertifikat dan program QC internal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <div>
+      <div class="eyebrow">SI-LATERA</div>
+      <strong>Laboratorium Terpadu UIN Sunan Kalijaga</strong><br>
+      Sistem Informasi Layanan Laboratorium Kimia
+    </div>
+    <div>
+      <div class="eyebrow">Menu</div>
+      Peminjaman Alat · Bahan Kimia · Jadwal Praktikum · Layanan Pengujian
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// =====================================================================
+// KONFIGURASI SUPABASE — ganti dua nilai di bawah ini dengan milik Anda
+// (Project URL & anon public key, dari Settings > API di dashboard Supabase)
+// =====================================================================
+const SUPABASE_URL = 'https://sbnbsvioatptzvumoqyn.supabase.co';       // contoh: https://xxxxxxxx.supabase.co
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNibmJzdmlvYXRwdHp2dW1vcXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMjExNDQsImV4cCI6MjA5ODc5NzE0NH0.ILDxcx6_h-ZtnseHZqw0yL9fLboeuQxCL6EvNiMtugc';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUser = null; // { id, email, full_name, role } setelah login
+
+// ---------- Navigation ----------
+const tabButtons = document.querySelectorAll('#tabNav button');
+const views = document.querySelectorAll('section.view');
+tabButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    views.forEach(v=>v.classList.remove('active'));
+    document.getElementById(btn.dataset.target).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(btn.dataset.target === 'rekap'){ updateRekapView(); }
+    if(btn.dataset.target === 'admin'){ updateAdminPanelView(); }
+  });
+});
+
+// ---------- Auth: Login Staf (asisten/admin) ----------
+const loginOpenBtn = document.getElementById('loginOpenBtn');
+const loginPanel = document.getElementById('loginPanel');
+const authWidget = document.getElementById('authWidget');
+
+loginOpenBtn.addEventListener('click', ()=>{
+  loginPanel.style.display = loginPanel.style.display==='none' ? 'block' : 'none';
+});
+
+document.getElementById('loginSubmitBtn').addEventListener('click', async ()=>{
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  const errEl = document.getElementById('loginError');
+  if(error){
+    errEl.textContent = 'Email/password salah.';
+    errEl.style.display = 'inline';
+    return;
+  }
+  errEl.style.display = 'none';
+  await loadCurrentProfile();
+  loginPanel.style.display = 'none';
+});
+
+async function loadCurrentProfile(){
+  const { data: { user } } = await sb.auth.getUser();
+  if(!user){ currentUser = null; renderAuthWidget(); return; }
+  const { data: profile } = await sb.from('profiles').select('id, full_name, role').eq('id', user.id).single();
+  currentUser = profile ? { id: user.id, email: user.email, full_name: profile.full_name, role: profile.role } : null;
+  renderAuthWidget();
+  renderReagen();       // formulir input reagen muncul/hilang sesuai role
+  updateRekapView();    // tab & isi Rekapitulasi muncul/hilang sesuai role
+  updateAdminPanelView(); // tab & isi Panel Admin muncul/hilang sesuai role
+}
+
+function renderAuthWidget(){
+  if(currentUser){
+    authWidget.innerHTML = `
+      <span style="font-size:12px; color:var(--text-light);">${currentUser.full_name} <span class="prodi-tag" style="background:transparent; border-color:rgba(237,231,217,0.25); color:var(--amber);">${currentUser.role}</span></span>
+      <button id="logoutBtn" style="background:transparent; border:1px solid rgba(237,231,217,0.25); color:var(--text-light); padding:7px 12px; border-radius:3px; font-size:12px; cursor:pointer;">Keluar</button>`;
+    document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+      await sb.auth.signOut();
+      currentUser = null;
+      renderAuthWidget();
+      renderReagen();
+      updateRekapView();
+      updateAdminPanelView();
+    });
+  } else {
+    authWidget.innerHTML = `<button id="loginOpenBtn" style="background:transparent; border:1px solid rgba(237,231,217,0.25); color:var(--text-light); padding:7px 12px; border-radius:3px; font-size:12px; cursor:pointer;">Login Staf</button>`;
+    document.getElementById('loginOpenBtn').addEventListener('click', ()=>{
+      loginPanel.style.display = loginPanel.style.display==='none' ? 'block' : 'none';
+    });
+  }
+}
+
+// ---------- Data: Alat Umum Lab ----------
+let alatData = [];
+async function loadAlat(){
+  const { data, error } = await sb.from('alat').select('*').order('nama');
+  alatData = data || [];
+}
+function badgeClassAlat(s){ return s==='Tersedia' ? 'ok' : s==='Dipakai' ? 'warn' : 'bad'; }
+
+// Jadwal pemakaian alat yang SUDAH disetujui (view publik, tanpa identitas peminjam)
+let peminjamanPublikData = [];
+async function loadPeminjamanPublik(){
+  const { data, error } = await sb.from('peminjaman_publik').select('*');
+  if(error){ console.error('loadPeminjamanPublik error:', error); peminjamanPublikData = []; return; }
+  peminjamanPublikData = data || [];
+}
+
+function computeAlatDisplayStatus(alat){
+  // Cari peminjaman yang SUDAH DISETUJUI dan belum lewat waktunya (sedang berlangsung atau akan datang)
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0,10);
+  const nowTime = now.toTimeString().slice(0,8);
+
+  const relevan = peminjamanPublikData
+    .filter(p=> p.alat_id===alat.id && (p.tanggal_pakai > todayStr || (p.tanggal_pakai===todayStr && p.jam_selesai >= nowTime)))
+    .sort((a,b)=> (a.tanggal_pakai+a.jam_mulai).localeCompare(b.tanggal_pakai+b.jam_mulai));
+
+  if(relevan.length > 0){
+    const b = relevan[0];
+    return {
+      label: `Dipakai (${fmtTanggal(b.tanggal_pakai)}, ${b.jam_mulai.slice(0,5)}–${b.jam_selesai.slice(0,5)})`,
+      cls: 'warn',
+      kategori: 'Dipakai'
+    };
+  }
+  if(alat.status === 'Perawatan'){
+    return { label: 'Perawatan', cls: 'bad', kategori: 'Perawatan' };
+  }
+  return { label: 'Tersedia', cls: 'ok', kategori: 'Tersedia' };
+}
+
+function renderAlat(){
+  const q = document.getElementById('alatSearch').value.toLowerCase();
+  const f = document.getElementById('alatFilter').value;
+  const body = document.getElementById('alatTableBody');
+  body.innerHTML = '';
+  alatData
+    .map(a => ({ a, statusInfo: computeAlatDisplayStatus(a) }))
+    .filter(({a, statusInfo}) => a.nama.toLowerCase().includes(q) && (f==='' || statusInfo.kategori===f))
+    .forEach(({a, statusInfo})=>{
+      body.innerHTML += `<tr><td>${a.nama}</td><td>${a.kategori}</td><td>${a.lokasi}</td>
+        <td><span class="badge ${statusInfo.cls}">${statusInfo.label}</span></td></tr>`;
+    });
+}
+document.getElementById('alatSearch').addEventListener('input', renderAlat);
+document.getElementById('alatFilter').addEventListener('change', renderAlat);
+
+// ---------- Cek Status Peminjaman (publik, tanpa login) ----------
+document.getElementById('formCekStatus').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const nim = document.getElementById('cekNimNip').value;
+  const tanggal = document.getElementById('cekTanggal').value;
+  const resultBox = document.getElementById('cekStatusResult');
+  resultBox.innerHTML = `<p style="font-size:12.5px; color:#93A2A9;">Mencari...</p>`;
+
+  const { data, error } = await sb.rpc('cek_status_peminjaman', { p_nim_nip: nim, p_tanggal: tanggal });
+  if(error){ resultBox.innerHTML = `<p style="color:var(--rust); font-size:12.5px;">Gagal memuat: ${error.message}</p>`; return; }
+  if(!data || data.length===0){
+    resultBox.innerHTML = `<p style="font-size:12.5px; color:#5a6367;">Tidak ditemukan permohonan dengan NIM/NIP dan tanggal tersebut.</p>`;
+    return;
+  }
+
+  const statusBadge = s => s==='Disetujui' ? 'ok' : s==='Ditolak' ? 'bad' : s==='Dikembalikan' ? 'info' : 'warn';
+  resultBox.innerHTML = data.map(r=>`
+    <div class="card" style="margin-top:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div>
+          <strong style="font-size:13.5px;">${r.nama_alat}</strong><br>
+          <span style="font-size:12px; color:#5a6367;">${fmtTanggal(r.tanggal_pakai)} · ${r.jam_mulai ? r.jam_mulai.slice(0,5) : '-'}–${r.jam_selesai ? r.jam_selesai.slice(0,5) : '-'}</span>
+        </div>
+        <span class="badge ${statusBadge(r.status)}">${r.status}</span>
+      </div>
+    </div>
+  `).join('');
+});
+
+// ---------- Program Studi (dipakai lintas halaman) ----------
+const PRODI_LIST = ['Kimia','Pendidikan Kimia','Biologi','Sains Biomedis','Teknik Industri'];
+function fillProdiSelect(id){
+  const sel = document.getElementById(id);
+  PRODI_LIST.forEach(p=> sel.innerHTML += `<option value="${p}">${p}</option>`);
+}
+fillProdiSelect('bahanProdiFilter');
+fillProdiSelect('reagenProdiFilter');
+
+// ---------- Data: Bahan Kimia (model kepemilikan: satu bahan bisa dimiliki >1 prodi) ----------
+let bahanData = [];
+async function loadBahan(){
+  const { data, error } = await sb
+    .from('bahan_kepemilikan')
+    .select('id, jumlah, satuan, lokasi, tanggal_pengadaan, status, bahan_kimia(id, nama, grade, kategori), program_studi(nama)')
+    .order('id');
+  if(error){ console.error('loadBahan error:', error); bahanData = []; return; }
+  bahanData = (data || []).map(r => ({
+    id: r.id,
+    bahanId: r.bahan_kimia ? r.bahan_kimia.id : null,
+    nama: r.bahan_kimia ? r.bahan_kimia.nama : '(tidak diketahui)',
+    grade: r.bahan_kimia ? r.bahan_kimia.grade : '-',
+    kategori: r.bahan_kimia ? r.bahan_kimia.kategori : '-',
+    prodi: r.program_studi ? r.program_studi.nama : '-',
+    stok: [r.jumlah, r.satuan].filter(Boolean).join(' '),
+    lokasi: r.lokasi || '-',
+    tanggal: r.tanggal_pengadaan,
+    status: r.status
+  }));
+}
+function badgeClassBahan(s){ return s==='Tersedia' ? 'ok' : s==='Menipis' ? 'warn' : 'bad'; }
+function fmtTanggal(iso){
+  if(!iso) return '—';
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+function renderBahan(){
+  const q = document.getElementById('bahanSearch').value.toLowerCase();
+  const f = document.getElementById('bahanFilter').value;
+  const pf = document.getElementById('bahanProdiFilter').value;
+  const body = document.getElementById('bahanTableBody');
+  body.innerHTML = '';
+  bahanData.filter(b=>
+      (b.nama.toLowerCase().includes(q) || b.kategori.toLowerCase().includes(q)) &&
+      (f==='' || b.status===f) &&
+      (pf==='' || b.prodi===pf)
+    )
+    .forEach(b=>{
+      body.innerHTML += `<tr><td>${b.nama}</td><td class="mono">${b.grade}</td><td>${b.kategori}</td>
+        <td><span class="prodi-tag">${b.prodi}</span></td><td class="mono">${b.stok}</td><td>${b.lokasi}</td>
+        <td class="mono">${fmtTanggal(b.tanggal)}</td>
+        <td><span class="badge ${badgeClassBahan(b.status)}">${b.status}</span></td></tr>`;
+    });
+  if(body.innerHTML===''){
+    body.innerHTML = `<tr><td colspan="8" style="color:#93A2A9; font-style:italic;">Belum ada data, atau tidak ada yang cocok dengan pencarian/filter.</td></tr>`;
+  }
+}
+document.getElementById('bahanSearch').addEventListener('input', renderBahan);
+document.getElementById('bahanFilter').addEventListener('change', renderBahan);
+document.getElementById('bahanProdiFilter').addEventListener('change', renderBahan);
+
+// ---------- Data: Reagen Praktikum (per judul percobaan) ----------
+let reagenPraktikumData = []; // [{id, judul, matkul, prodi, reagen:[{id, nama, jumlah, dibuat, kedaluwarsa, asisten, status}]}]
+
+async function loadReagen(){
+  const { data, error } = await sb
+    .from('percobaan_praktikum')
+    .select(`
+      id, judul, mata_kuliah,
+      percobaan_prodi ( program_studi ( nama ) ),
+      reagen_praktikum ( id, nama_reagen, jumlah, tanggal_dibuat, tanggal_kedaluwarsa, status, profiles ( full_name ) )
+    `)
+    .order('id');
+  if(error){ console.error('loadReagen error:', error); reagenPraktikumData = []; return; }
+  reagenPraktikumData = (data || []).map(p => ({
+    id: p.id,
+    judul: p.judul,
+    matkul: p.mata_kuliah || '-',
+    prodi: (p.percobaan_prodi || []).map(x=> x.program_studi ? x.program_studi.nama : null).filter(Boolean).join(' / ') || '-',
+    reagen: (p.reagen_praktikum || []).map(r => ({
+      id: r.id,
+      nama: r.nama_reagen,
+      jumlah: r.jumlah,
+      dibuat: r.tanggal_dibuat,
+      kedaluwarsa: r.tanggal_kedaluwarsa,
+      asisten: r.profiles ? r.profiles.full_name : null,
+      status: r.status
+    }))
+  }));
+}
+
+const STATUS_REAGEN = ['Belum Dibuat','Sedang Diproses','Siap Digunakan','Menipis','Habis'];
+function badgeClassReagen(s){
+  if(s==='Siap Digunakan' || s==='Tersedia') return 'ok';
+  if(s==='Sedang Diproses' || s==='Menipis') return 'warn';
+  if(s==='Belum Dibuat') return 'neutral';
+  return 'bad'; // Habis
+}
+
+function expiryInfo(r){
+  if(r.status==='Belum Dibuat' || r.status==='Sedang Diproses' || !r.kedaluwarsa){
+    return {cls:'neutral', label:'—'};
+  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const exp = new Date(r.kedaluwarsa+'T00:00:00');
+  const diffDays = Math.round((exp - today) / 86400000);
+  if(diffDays < 0) return {cls:'bad', label:`Kedaluwarsa (${fmtTanggal(r.kedaluwarsa)})`};
+  if(diffDays <= 7) return {cls:'warn', label:`Segera kedaluwarsa · ${fmtTanggal(r.kedaluwarsa)}`};
+  return {cls:'ok', label:`Berlaku s.d. ${fmtTanggal(r.kedaluwarsa)}`};
+}
+
+function readinessBadge(reagenList){
+  if(reagenList.length===0) return {cls:'neutral', label:'Belum Ada Data'};
+  if(reagenList.some(r=>r.status==='Habis' || r.status==='Belum Dibuat')) return {cls:'bad', label:'Belum Lengkap'};
+  if(reagenList.some(r=>r.status==='Menipis' || r.status==='Sedang Diproses')) return {cls:'warn', label:'Perlu Perhatian'};
+  return {cls:'ok', label:'Siap Digunakan'};
+}
+
+const openCards = new Set([0,1]);
+
+function renderReagen(){
+  const q = document.getElementById('reagenSearch').value.toLowerCase();
+  const pf = document.getElementById('reagenProdiFilter').value;
+  const wrap = document.getElementById('reagenList');
+  wrap.innerHTML = '';
+  const canEdit = currentUser && (currentUser.role==='asisten' || currentUser.role==='admin');
+
+  const filtered = reagenPraktikumData
+    .map((p,realIdx)=> ({p, realIdx}))
+    .filter(({p})=> p.judul.toLowerCase().includes(q) && (pf==='' || p.prodi.includes(pf)));
+
+  if(filtered.length===0){
+    wrap.innerHTML = `<p style="color:#93A2A9; font-style:italic; font-size:13px;">Belum ada judul percobaan, atau tidak ada yang cocok.</p>`;
+    return;
+  }
+
+  const statusOptions = STATUS_REAGEN.map(s=>`<option value="${s}">${s}</option>`).join('');
+
+  filtered.forEach(({p, realIdx})=>{
+    const rb = readinessBadge(p.reagen);
+    let rows = '';
+    let datalistOpts = '';
+    p.reagen.forEach(r=>{
+      const exp = expiryInfo(r);
+      rows += `<tr>
+        <td>${r.nama}</td>
+        <td class="mono">${r.jumlah || '—'}</td>
+        <td class="mono">${r.dibuat ? fmtTanggal(r.dibuat) : '—'}</td>
+        <td><span class="badge ${exp.cls}">${exp.label}</span></td>
+        <td>${r.asisten || '—'}</td>
+        <td><span class="badge ${badgeClassReagen(r.status)}">${r.status}</span></td>
+      </tr>`;
+      datalistOpts += `<option value="${r.nama}">`;
+    });
+
+    const formHtml = canEdit ? `
+          <form class="reagen-input-form" data-percobaan-id="${p.id}" style="margin-top:16px; display:grid; grid-template-columns:repeat(5,1fr); gap:10px; align-items:end;">
+            <datalist id="dl-${p.id}">${datalistOpts}</datalist>
+            <div style="grid-column:span 2;">
+              <label style="display:block; font-size:11px; font-weight:600; margin-bottom:4px;">Nama Reagen</label>
+              <input list="dl-${p.id}" name="nama" placeholder="Pilih/ketik baru" required style="width:100%; border:1px solid var(--line-strong); border-radius:3px; padding:8px 9px; font-size:12.5px;">
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:600; margin-bottom:4px;">Status</label>
+              <select name="status" required style="width:100%; border:1px solid var(--line-strong); border-radius:3px; padding:8px 9px; font-size:12.5px;">${statusOptions}</select>
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:600; margin-bottom:4px;">Jumlah</label>
+              <input name="jumlah" placeholder="mis. 250 mL" style="width:100%; border:1px solid var(--line-strong); border-radius:3px; padding:8px 9px; font-size:12.5px;">
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:600; margin-bottom:4px;">Tgl Dibuat</label>
+              <input type="date" name="dibuat" style="width:100%; border:1px solid var(--line-strong); border-radius:3px; padding:8px 9px; font-size:12.5px;">
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:600; margin-bottom:4px;">Batas Pakai</label>
+              <input type="date" name="kedaluwarsa" style="width:100%; border:1px solid var(--line-strong); border-radius:3px; padding:8px 9px; font-size:12.5px;">
+            </div>
+            <div>
+              <button type="submit" class="req-btn" style="width:100%;">Simpan sebagai ${currentUser.full_name}</button>
+            </div>
+          </form>` : `
+          <div class="note-box" style="margin-top:16px;">Login sebagai asisten atau admin untuk memperbarui status reagen di percobaan ini.</div>`;
+
+    wrap.innerHTML += `
+      <details class="exp-card" data-idx="${realIdx}" ${openCards.has(realIdx) ? 'open':''}>
+        <summary>
+          <div>
+            <span class="id-code">${p.matkul}</span>
+            <h4>${p.judul}</h4>
+            <span class="meta">Program Studi: ${p.prodi}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span class="badge ${rb.cls} readiness">${rb.label}</span>
+            <span class="toggle">+</span>
+          </div>
+        </summary>
+        <div class="body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nama Reagen</th><th>Jumlah Dibuat</th><th>Tgl Dibuat</th><th>Batas Pakai</th><th>Asisten</th><th>Status</th></tr></thead>
+              <tbody>${rows || '<tr><td colspan="6" style="color:#93A2A9; font-style:italic;">Belum ada reagen tercatat.</td></tr>'}</tbody>
+            </table>
+          </div>
+          ${formHtml}
+        </div>
+      </details>`;
+  });
+
+  wrap.querySelectorAll('details.exp-card').forEach(d=>{
+    d.addEventListener('toggle', ()=>{
+      const idx = parseInt(d.dataset.idx);
+      if(d.open) openCards.add(idx); else openCards.delete(idx);
+    });
+  });
+
+  wrap.querySelectorAll('form.reagen-input-form').forEach(f=>{
+    f.addEventListener('submit', async e=>{
+      e.preventDefault();
+      if(!canEdit) return;
+      const percobaanId = parseInt(f.dataset.percobaanId);
+      const fd = new FormData(f);
+      const namaInput = fd.get('nama').trim();
+      if(!namaInput){ return; }
+
+      const percobaan = reagenPraktikumData.find(p=> p.id === percobaanId);
+      const existing = percobaan.reagen.find(r=> r.nama.toLowerCase() === namaInput.toLowerCase());
+
+      const payload = {
+        nama_reagen: namaInput,
+        jumlah: fd.get('jumlah') || null,
+        tanggal_dibuat: fd.get('dibuat') || null,
+        tanggal_kedaluwarsa: fd.get('kedaluwarsa') || null,
+        status: fd.get('status'),
+        asisten_id: currentUser.id
+      };
+
+      let error;
+      if(existing){
+        ({ error } = await sb.from('reagen_praktikum').update(payload).eq('id', existing.id));
+      } else {
+        ({ error } = await sb.from('reagen_praktikum').insert({ ...payload, percobaan_id: percobaanId }));
+      }
+      if(error){ alert('Gagal menyimpan: ' + error.message); return; }
+
+      openCards.add(reagenPraktikumData.findIndex(p=>p.id===percobaanId));
+      await loadReagen();
+      renderReagen();
+    });
+  });
+}
+document.getElementById('reagenSearch').addEventListener('input', renderReagen);
+document.getElementById('reagenProdiFilter').addEventListener('change', renderReagen);
+
+// ---------- Data: Jadwal Praktikum ----------
+let jadwalSlots = [];
+let jadwalData = {};
+let jadwalRaw = []; // data mentah (dengan id) untuk Panel Admin
+const HARI_URUT = ['Senin','Selasa','Rabu','Kamis','Jumat'];
+
+async function loadJadwal(){
+  const { data, error } = await sb
+    .from('jadwal_praktikum')
+    .select('id, hari, jam_mulai, jam_selesai, mata_kuliah, lab, program_studi(nama)')
+    .order('jam_mulai');
+  if(error){ console.error('loadJadwal error:', error); jadwalSlots = []; jadwalData = {}; jadwalRaw = []; return; }
+
+  const rows = data || [];
+  jadwalRaw = rows.map(r => ({
+    id: r.id, hari: r.hari, jamMulai: r.jam_mulai, jamSelesai: r.jam_selesai,
+    matkul: r.mata_kuliah, lab: r.lab, prodi: r.program_studi ? r.program_studi.nama : '-'
+  }));
+
+  const slotSet = new Set(rows.map(r => `${r.jam_mulai.slice(0,5).replace(':','.')}–${r.jam_selesai.slice(0,5).replace(':','.')}`));
+  jadwalSlots = [...slotSet].sort();
+  jadwalData = {};
+  jadwalSlots.forEach(s=> jadwalData[s] = HARI_URUT.map(()=> []));
+
+  rows.forEach(r=>{
+    const label = `${r.jam_mulai.slice(0,5).replace(':','.')}–${r.jam_selesai.slice(0,5).replace(':','.')}`;
+    const dayIdx = HARI_URUT.indexOf(r.hari);
+    if(dayIdx >= 0){
+      jadwalData[label][dayIdx].push({
+        course: r.mata_kuliah,
+        lab: r.lab || '-',
+        prodi: r.program_studi ? r.program_studi.nama : '-'
+      });
+    }
+  });
+}
+
+function renderJadwal(){
+  const body = document.getElementById('jadwalTableBody');
+  body.innerHTML = '';
+  if(jadwalSlots.length===0){
+    body.innerHTML = `<tr><td colspan="6" style="color:#93A2A9; font-style:italic;">Belum ada jadwal tersimpan.</td></tr>`;
+    return;
+  }
+  jadwalSlots.forEach(s=>{
+    let row = `<tr><td class="slot">${s}</td>`;
+    jadwalData[s].forEach(items=>{
+      if(items.length===0){
+        row += `<td class="empty-slot">—</td>`;
+      } else {
+        const blocks = items.map(item=>`
+          <div style="${items.length>1 ? 'padding-bottom:8px; margin-bottom:8px; border-bottom:1px dashed var(--line-strong);' : ''}">
+            <span class="cell-course">${item.course}</span>
+            <span class="cell-lab">${item.prodi} · ${item.lab}</span>
+          </div>`).join('');
+        row += `<td>${blocks}</td>`;
+      }
+    });
+    row += '</tr>';
+    body.innerHTML += row;
+  });
+}
+
+// ---------- Data: Layanan Pengujian ----------
+function fmtRupiah(n){ return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+let instrumentData = [];
+
+async function loadInstrumen(){
+  const { data, error } = await sb.from('instrumen_pengujian').select('*').order('kode');
+  if(error){ console.error('loadInstrumen error:', error); instrumentData = []; return; }
+  instrumentData = (data || []).map(i => ({
+    code: i.kode, nama: i.nama, kegunaan: i.kegunaan, parameter: i.parameter,
+    sampel: i.preparasi_sampel, waktu: i.estimasi_waktu,
+    hargaInternal: i.harga_internal, hargaEksternal: i.harga_eksternal
+  }));
+}
+
+function renderInstrumentGrid(){
+  const grid = document.getElementById('instrumentGrid');
+  grid.innerHTML = '';
+  instrumentData.forEach(ins=>{
+    grid.innerHTML += `
+      <details class="instrument">
+        <summary>
+          <div>
+            <span class="id-code">${ins.code}</span>
+            <h4>${ins.nama}</h4>
+          </div>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="body">
+          <p style="font-size:12.8px; color:#464e51; margin:0 0 10px;">${ins.kegunaan}</p>
+          <div class="spec-grid">
+            <div><div class="k">Parameter Uji</div><div class="v">${ins.parameter}</div></div>
+            <div><div class="k">Preparasi Sampel</div><div class="v">${ins.sampel}</div></div>
+            <div><div class="k">Estimasi Waktu</div><div class="v">${ins.waktu}</div></div>
+            <div><div class="k">Tarif Internal (per sampel)</div><div class="v mono">${fmtRupiah(ins.hargaInternal)}</div></div>
+            <div><div class="k">Tarif Eksternal (per sampel)</div><div class="v mono">${fmtRupiah(ins.hargaEksternal)}</div></div>
+          </div>
+          <button class="req-btn" onclick="requestInstrument('${ins.nama.replace(/'/g,"")}')">Ajukan Pengujian Ini</button>
+        </div>
+      </details>`;
+  });
+}
+
+const selectUji = document.getElementById('selectUji');
+function populateSelectUji(){
+  selectUji.innerHTML = '';
+  instrumentData.forEach(i=> selectUji.innerHTML += `<option>${i.nama}</option>`);
+}
+
+function requestInstrument(nama){
+  selectUji.value = nama;
+  document.getElementById('formUji').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+// ---------- Peminjaman Alat ----------
+const selectAlat = document.getElementById('selectAlat');
+function populateSelectAlat(){
+  selectAlat.innerHTML = '';
+  alatData.forEach(a=> selectAlat.innerHTML += `<option>${a.nama}</option>`);
+}
+
+document.getElementById('formAlat').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const namaAlat = selectAlat.value;
+  const alat = alatData.find(a=> a.nama === namaAlat);
+  const payload = {
+    alat_id: alat ? alat.id : null,
+    nama_peminjam: document.getElementById('alatNamaPeminjam').value,
+    nim_nip: document.getElementById('alatNimNip').value,
+    tanggal_pakai: document.getElementById('alatTanggal').value,
+    jam_mulai: document.getElementById('alatJamMulai').value,
+    jam_selesai: document.getElementById('alatJamSelesai').value,
+    keperluan: document.getElementById('alatKeperluan').value
+  };
+  const { error } = await sb.from('peminjaman_alat').insert(payload);
+  if(error){ alert('Gagal mengajukan: ' + error.message); return; }
+  document.getElementById('confirmAlat').classList.add('show');
+  e.target.reset();
+});
+
+// ---------- Transaksi Pengujian & Rekap Pendapatan ----------
+document.getElementById('formUji').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const nama = document.getElementById('ujiNama').value || 'Tanpa nama';
+  const kontak = document.getElementById('ujiKontak').value;
+  const kategori = document.getElementById('ujiKategori').value;
+  const insNama = selectUji.value;
+  const jumlah = parseInt(document.getElementById('ujiJumlah').value) || 1;
+
+  const insLocal = instrumentData.find(i=> i.nama===insNama);
+  if(!insLocal){ return; }
+  const hargaSatuan = kategori==='internal' ? insLocal.hargaInternal : insLocal.hargaEksternal;
+
+  const { data: insRow } = await sb.from('instrumen_pengujian').select('id').eq('nama', insNama).single();
+
+  const { error } = await sb.from('transaksi_pengujian').insert({
+    instrumen_id: insRow ? insRow.id : null,
+    kategori_pemohon: kategori,
+    nama_pemohon: nama,
+    kontak: kontak,
+    jumlah_sampel: jumlah,
+    harga_satuan: hargaSatuan,
+    keterangan_sampel: document.getElementById('ujiKeterangan').value || null
+  });
+  if(error){ alert('Gagal mengirim pengajuan: ' + error.message); return; }
+
+  const total = hargaSatuan * jumlah;
+  document.getElementById('confirmUji').innerHTML = `✓ Pengajuan diterima. Estimasi biaya: ${fmtRupiah(total)}.`;
+  document.getElementById('confirmUji').classList.add('show');
+  e.target.reset();
+
+  if(currentUser && currentUser.role==='admin' && document.getElementById('rekapContent').style.display !== 'none'){
+    await loadTransaksi();
+    renderRekap();
+  }
+});
+
+let transaksiPengujian = [];
+async function loadTransaksi(){
+  // RLS memastikan baris ini hanya kembali kalau yang login adalah admin
+  const { data, error } = await sb
+    .from('transaksi_pengujian')
+    .select('tanggal, kategori_pemohon, nama_pemohon, jumlah_sampel, harga_satuan, keterangan_sampel, instrumen_pengujian(nama)')
+    .order('tanggal', {ascending:false});
+  if(error){ console.error('loadTransaksi error:', error); transaksiPengujian = []; return; }
+  transaksiPengujian = (data || []).map(t => ({
+    tanggal: t.tanggal,
+    instrumen: t.instrumen_pengujian ? t.instrumen_pengujian.nama : '-',
+    kategori: t.kategori_pemohon,
+    pemohon: t.nama_pemohon,
+    jumlahSampel: t.jumlah_sampel,
+    hargaSatuan: t.harga_satuan,
+    keterangan: t.keterangan_sampel || ''
+  }));
+}
+
+function renderRekap(){
+  const totalPendapatan = transaksiPengujian.reduce((s,t)=> s + t.hargaSatuan*t.jumlahSampel, 0);
+  const totalTransaksi = transaksiPengujian.length;
+  const rataRata = totalTransaksi ? Math.round(totalPendapatan/totalTransaksi) : 0;
+  document.getElementById('rekapTotal').textContent = fmtRupiah(totalPendapatan);
+  document.getElementById('rekapCount').textContent = totalTransaksi;
+  document.getElementById('rekapAvg').textContent = fmtRupiah(rataRata);
+
+  const perInstrumen = {};
+  transaksiPengujian.forEach(t=>{
+    if(!perInstrumen[t.instrumen]) perInstrumen[t.instrumen] = {sampel:0, transaksi:0, total:0};
+    perInstrumen[t.instrumen].sampel += t.jumlahSampel;
+    perInstrumen[t.instrumen].transaksi += 1;
+    perInstrumen[t.instrumen].total += t.hargaSatuan*t.jumlahSampel;
+  });
+  const bodyIns = document.getElementById('rekapPerInstrumen');
+  bodyIns.innerHTML = '';
+  Object.keys(perInstrumen).sort((a,b)=> perInstrumen[b].total - perInstrumen[a].total).forEach(nama=>{
+    const d = perInstrumen[nama];
+    bodyIns.innerHTML += `<tr><td>${nama}</td><td class="mono">${d.sampel}</td><td class="mono">${d.transaksi}</td><td class="mono">${fmtRupiah(d.total)}</td></tr>`;
+  });
+
+  const bodyLog = document.getElementById('rekapRiwayat');
+  bodyLog.innerHTML = '';
+  transaksiPengujian.forEach(t=>{
+    bodyLog.innerHTML += `<tr><td class="mono">${fmtTanggal(t.tanggal)}</td><td>${t.instrumen}</td>
+      <td><span class="prodi-tag">${t.kategori==='internal' ? 'Internal' : 'Eksternal'}</span></td>
+      <td>${t.pemohon}</td><td class="mono">${t.jumlahSampel}</td>
+      <td style="max-width:200px; font-size:12px;">${t.keterangan || '-'}</td>
+      <td class="mono">${fmtRupiah(t.hargaSatuan*t.jumlahSampel)}</td></tr>`;
+  });
+}
+
+function downloadRekapCSV(){
+  const header = ['Tanggal','Instrumen','Kategori','Pemohon','Jumlah Sampel','Keterangan Sampel','Harga Satuan','Total'];
+  const csvEscape = v => `"${String(v ?? '').replace(/"/g,'""')}"`;
+  const rows = transaksiPengujian.map(t => [
+    t.tanggal, t.instrumen, t.kategori, t.pemohon, t.jumlahSampel, t.keterangan, t.hargaSatuan, t.hargaSatuan*t.jumlahSampel
+  ]);
+  const csvContent = [header, ...rows].map(r => r.map(csvEscape).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' }); // BOM biar Excel baca UTF-8 dengan benar
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `rekapitulasi-pengujian-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+document.getElementById('rekapDownloadBtn').addEventListener('click', downloadRekapCSV);
+
+async function updateRekapView(){
+  const gate = document.getElementById('rekapGate');
+  const content = document.getElementById('rekapContent');
+  const navBtn = document.getElementById('rekapNavBtn');
+  const isAdmin = currentUser && currentUser.role==='admin';
+
+  navBtn.style.display = isAdmin ? '' : 'none';
+
+  if(isAdmin){
+    gate.style.display = 'none';
+    content.style.display = 'block';
+    await loadTransaksi();
+    renderRekap();
+  } else {
+    gate.style.display = 'block';
+    content.style.display = 'none';
+    // Kalau tab Rekapitulasi sedang terbuka tapi akses admin dicabut (mis. logout), kembalikan ke Beranda
+    if(document.getElementById('rekap').classList.contains('active')){
+      document.querySelector('#tabNav button[data-target="beranda"]').click();
+    }
+  }
+}
+
+// ---------- Beranda shortcuts ----------
+const shortcuts = [
+  {target:'peminjaman', title:'Peminjaman Alat', desc:'Cek status & ajukan peminjaman alat penunjang.'},
+  {target:'bahan', title:'Bahan Kimia', desc:'Lihat ketersediaan stok bahan & reagen.'},
+  {target:'jadwal', title:'Jadwal Praktikum', desc:'Jadwal mingguan penggunaan ruang lab.'},
+  {target:'pengujian', title:'Layanan Pengujian', desc:'Ajukan pengujian sampel ke 8 instrumen.'},
+];
+const shortcutWrap = document.getElementById('beranda-shortcuts');
+shortcuts.forEach(s=>{
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.style.cursor = 'pointer';
+  el.innerHTML = `<h4 style="font-size:14.5px; margin-bottom:6px;">${s.title}</h4><p style="font-size:12.5px; color:#5a6367; margin:0;">${s.desc}</p>`;
+  el.addEventListener('click', ()=> document.querySelector(`#tabNav button[data-target="${s.target}"]`).click());
+  shortcutWrap.appendChild(el);
+});
+
+// ---------- Panel Admin ----------
+async function getProdiId(nama){
+  const { data } = await sb.from('program_studi').select('id').eq('nama', nama).single();
+  return data ? data.id : null;
+}
+
+async function getOrCreateBahanId(nama, grade, kategori){
+  const { data: existing } = await sb.from('bahan_kimia').select('id').eq('nama', nama).maybeSingle();
+  if(existing) return existing.id;
+  const { data: created, error } = await sb.from('bahan_kimia').insert({ nama, grade, kategori }).select('id').single();
+  if(error){ throw error; }
+  return created.id;
+}
+
+function populateAdminSelects(){
+  const bahanProdiSel = document.getElementById('adminBahanProdi');
+  const jadwalProdiSel = document.getElementById('adminJadwalProdi');
+  bahanProdiSel.innerHTML = PRODI_LIST.map(p=>`<option value="${p}">${p}</option>`).join('');
+  jadwalProdiSel.innerHTML = PRODI_LIST.map(p=>`<option value="${p}">${p}</option>`).join('');
+
+  const checksWrap = document.getElementById('adminPercobaanProdiChecks');
+  checksWrap.innerHTML = PRODI_LIST.map(p=>`
+    <label style="font-size:12.5px; font-weight:400; display:flex; align-items:center; gap:5px;">
+      <input type="checkbox" value="${p}"> ${p}
+    </label>`).join('');
+}
+
+// ---------- Verifikasi Peminjaman Alat (Admin) ----------
+let peminjamanAdminData = [];
+async function loadPeminjamanAdmin(){
+  const { data, error } = await sb
+    .from('peminjaman_alat')
+    .select('id, nama_peminjam, nim_nip, tanggal_pakai, jam_mulai, jam_selesai, keperluan, status, alat(nama)')
+    .order('created_at', {ascending:false});
+  if(error){ console.error('loadPeminjamanAdmin error:', error); peminjamanAdminData = []; return; }
+  peminjamanAdminData = data || [];
+}
+
+const STATUS_PEMINJAMAN = ['Diajukan','Disetujui','Dikembalikan','Ditolak'];
+function badgeClassPeminjaman(s){
+  if(s==='Disetujui') return 'ok';
+  if(s==='Ditolak') return 'bad';
+  if(s==='Dikembalikan') return 'info';
+  return 'warn'; // Diajukan
+}
+
+function renderVerifikasiPeminjaman(){
+  const body = document.getElementById('adminVerifikasiBody');
+  body.innerHTML = peminjamanAdminData.map(p=>`
+    <tr data-id="${p.id}">
+      <td>${p.nama_peminjam}<br><span class="mono" style="font-size:11px; color:#8a938a;">${p.nim_nip}</span></td>
+      <td>${p.alat ? p.alat.nama : '-'}</td>
+      <td class="mono">${fmtTanggal(p.tanggal_pakai)}<br>${p.jam_mulai ? p.jam_mulai.slice(0,5):'-'}–${p.jam_selesai ? p.jam_selesai.slice(0,5):'-'}</td>
+      <td style="max-width:180px; font-size:12px;">${p.keperluan || '-'}</td>
+      <td>
+        <select class="peminjaman-status-select" style="border:1px solid var(--line-strong); border-radius:3px; padding:6px 8px; font-size:12.5px;">
+          ${STATUS_PEMINJAMAN.map(s=>`<option value="${s}" ${s===p.status?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td><button type="button" class="peminjaman-save-btn req-btn">Simpan</button></td>
+    </tr>
+  `).join('') || `<tr><td colspan="6" style="color:#93A2A9; font-style:italic;">Belum ada pengajuan.</td></tr>`;
+
+  body.querySelectorAll('tr[data-id]').forEach(row=>{
+    const btn = row.querySelector('.peminjaman-save-btn');
+    if(!btn) return;
+    btn.addEventListener('click', async ()=>{
+      const id = row.dataset.id;
+      const statusBaru = row.querySelector('.peminjaman-status-select').value;
+      const { error } = await sb.from('peminjaman_alat').update({ status: statusBaru }).eq('id', id);
+      if(error){ alert('Gagal menyimpan: ' + error.message); return; }
+      btn.textContent = 'Tersimpan ✓';
+      setTimeout(()=> btn.textContent = 'Simpan', 1200);
+      // Sinkronkan ke tampilan publik (status alat & jadwal pemakaian yang disetujui)
+      await loadPeminjamanAdmin();
+      await loadPeminjamanPublik();
+      renderVerifikasiPeminjaman();
+      renderAlat();
+    });
+  });
+}
+
+function renderAdminPanel(){
+  // --- Alat ---
+  const alatBody = document.getElementById('adminAlatBody');
+  alatBody.innerHTML = alatData.map(a=>`
+    <tr><td>${a.nama}</td><td>${a.kategori||'-'}</td><td>${a.lokasi||'-'}</td>
+    <td><span class="badge ${badgeClassAlat(a.status)}">${a.status}</span></td>
+    <td><button type="button" class="admin-delete-btn" data-table="alat" data-id="${a.id}" style="color:var(--rust); background:none; border:none; cursor:pointer; font-size:12px;">Hapus</button></td></tr>
+  `).join('') || `<tr><td colspan="5" style="color:#93A2A9; font-style:italic;">Belum ada data.</td></tr>`;
+
+  // --- Bahan Kimia ---
+  const bahanBody = document.getElementById('adminBahanBody');
+  bahanBody.innerHTML = bahanData.map(b=>`
+    <tr><td>${b.nama}</td><td class="mono">${b.grade}</td><td>${b.kategori}</td>
+    <td><span class="prodi-tag">${b.prodi}</span></td><td class="mono">${b.stok}</td><td>${b.lokasi}</td>
+    <td class="mono">${fmtTanggal(b.tanggal)}</td><td><span class="badge ${badgeClassBahan(b.status)}">${b.status}</span></td>
+    <td><button type="button" class="admin-delete-btn" data-table="bahan_kepemilikan" data-id="${b.id}" style="color:var(--rust); background:none; border:none; cursor:pointer; font-size:12px;">Hapus</button></td></tr>
+  `).join('') || `<tr><td colspan="9" style="color:#93A2A9; font-style:italic;">Belum ada data.</td></tr>`;
+
+  const dl = document.getElementById('dlAdminBahan');
+  const namaUnik = [...new Set(bahanData.map(b=>b.nama))];
+  dl.innerHTML = namaUnik.map(n=>`<option value="${n}">`).join('');
+
+  // --- Jadwal ---
+  const jadwalBody = document.getElementById('adminJadwalBody');
+  jadwalBody.innerHTML = jadwalRaw.map(j=>`
+    <tr><td>${j.hari}</td><td class="mono">${j.jamMulai.slice(0,5)}–${j.jamSelesai.slice(0,5)}</td>
+    <td>${j.matkul}</td><td><span class="prodi-tag">${j.prodi}</span></td><td>${j.lab||'-'}</td>
+    <td><button type="button" class="admin-delete-btn" data-table="jadwal_praktikum" data-id="${j.id}" style="color:var(--rust); background:none; border:none; cursor:pointer; font-size:12px;">Hapus</button></td></tr>
+  `).join('') || `<tr><td colspan="6" style="color:#93A2A9; font-style:italic;">Belum ada data.</td></tr>`;
+
+  // --- Percobaan Praktikum ---
+  const percobaanBody = document.getElementById('adminPercobaanBody');
+  percobaanBody.innerHTML = reagenPraktikumData.map(p=>`
+    <tr><td>${p.judul}</td><td>${p.matkul}</td><td><span class="prodi-tag">${p.prodi}</span></td>
+    <td><button type="button" class="admin-delete-btn" data-table="percobaan_praktikum" data-id="${p.id}" style="color:var(--rust); background:none; border:none; cursor:pointer; font-size:12px;">Hapus</button></td></tr>
+  `).join('') || `<tr><td colspan="4" style="color:#93A2A9; font-style:italic;">Belum ada data.</td></tr>`;
+
+  // --- Delete handlers (event delegation ulang tiap render) ---
+  document.querySelectorAll('.admin-delete-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      if(!confirm('Yakin hapus data ini?')) return;
+      const table = btn.dataset.table;
+      const id = btn.dataset.id;
+      const { error } = await sb.from(table).delete().eq('id', id);
+      if(error){ alert('Gagal menghapus: ' + error.message); return; }
+      await refreshAfterAdminChange(table);
+    });
+  });
+}
+
+async function refreshAfterAdminChange(table){
+  if(table==='alat'){ await loadAlat(); renderAlat(); populateSelectAlat(); }
+  if(table==='bahan_kepemilikan'){ await loadBahan(); renderBahan(); }
+  if(table==='jadwal_praktikum'){ await loadJadwal(); renderJadwal(); }
+  if(table==='percobaan_praktikum'){ await loadReagen(); renderReagen(); }
+  renderAdminPanel();
+}
+
+document.getElementById('adminFormAlat').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const { error } = await sb.from('alat').insert({
+    nama: fd.get('nama'), kategori: fd.get('kategori') || null,
+    lokasi: fd.get('lokasi') || null, status: fd.get('status')
+  });
+  if(error){ alert('Gagal menambah alat: ' + error.message); return; }
+  e.target.reset();
+  await refreshAfterAdminChange('alat');
+});
+
+document.getElementById('adminFormBahan').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  try{
+    const bahanId = await getOrCreateBahanId(fd.get('nama'), fd.get('grade')||null, fd.get('kategori')||null);
+    const prodiId = await getProdiId(fd.get('prodi'));
+    const { error } = await sb.from('bahan_kepemilikan').insert({
+      bahan_id: bahanId, prodi_id: prodiId,
+      jumlah: fd.get('jumlah') || null, satuan: fd.get('satuan') || null,
+      lokasi: fd.get('lokasi') || null, tanggal_pengadaan: fd.get('tanggal') || null,
+      status: fd.get('status')
+    });
+    if(error) throw error;
+    e.target.reset();
+    await refreshAfterAdminChange('bahan_kepemilikan');
+  } catch(err){
+    alert('Gagal menyimpan bahan: ' + err.message);
+  }
+});
+
+document.getElementById('adminFormJadwal').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const prodiId = await getProdiId(fd.get('prodi'));
+  const { error } = await sb.from('jadwal_praktikum').insert({
+    hari: fd.get('hari'), jam_mulai: fd.get('jamMulai'), jam_selesai: fd.get('jamSelesai'),
+    mata_kuliah: fd.get('matkul'), prodi_id: prodiId, lab: fd.get('lab') || null
+  });
+  if(error){ alert('Gagal menambah jadwal: ' + error.message); return; }
+  e.target.reset();
+  await refreshAfterAdminChange('jadwal_praktikum');
+});
+
+document.getElementById('adminFormPercobaan').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const prodiTerpilih = [...document.querySelectorAll('#adminPercobaanProdiChecks input:checked')].map(c=>c.value);
+  try{
+    const { data: created, error } = await sb.from('percobaan_praktikum')
+      .insert({ judul: fd.get('judul'), mata_kuliah: fd.get('matkul') || null })
+      .select('id').single();
+    if(error) throw error;
+    for(const prodiNama of prodiTerpilih){
+      const prodiId = await getProdiId(prodiNama);
+      await sb.from('percobaan_prodi').insert({ percobaan_id: created.id, prodi_id: prodiId });
+    }
+    e.target.reset();
+    document.querySelectorAll('#adminPercobaanProdiChecks input').forEach(c=> c.checked=false);
+    await refreshAfterAdminChange('percobaan_praktikum');
+  } catch(err){
+    alert('Gagal menambah percobaan: ' + err.message);
+  }
+});
+
+async function updateAdminPanelView(){
+  const navBtn = document.getElementById('adminNavBtn');
+  const isAdmin = currentUser && currentUser.role==='admin';
+  navBtn.style.display = isAdmin ? '' : 'none';
+  if(isAdmin){
+    populateAdminSelects();
+    renderAdminPanel();
+    await loadAndRenderUsers();
+    await loadPeminjamanAdmin();
+    renderVerifikasiPeminjaman();
+  } else if(document.getElementById('admin').classList.contains('active')){
+    document.querySelector('#tabNav button[data-target="beranda"]').click();
+  }
+}
+
+// ---------- Kelola Pengguna ----------
+const ROLE_OPTIONS = ['publik','asisten','admin'];
+
+async function loadAndRenderUsers(){
+  const { data, error } = await sb.from('profiles').select('id, full_name, role').order('full_name');
+  const body = document.getElementById('adminUsersBody');
+  if(error){ body.innerHTML = `<tr><td colspan="3" style="color:var(--rust);">Gagal memuat: ${error.message}</td></tr>`; return; }
+
+  body.innerHTML = (data||[]).map(u=>`
+    <tr data-id="${u.id}">
+      <td><input type="text" class="user-name-input" value="${u.full_name || ''}" style="width:100%; border:1px solid var(--line-strong); border-radius:3px; padding:6px 8px; font-size:12.5px;"></td>
+      <td>
+        <select class="user-role-select" style="width:100%; border:1px solid var(--line-strong); border-radius:3px; padding:6px 8px; font-size:12.5px;">
+          ${ROLE_OPTIONS.map(r=>`<option value="${r}" ${r===u.role?'selected':''}>${r}</option>`).join('')}
+        </select>
+      </td>
+      <td><button type="button" class="user-save-btn req-btn" style="width:100%;">Simpan</button></td>
+    </tr>
+  `).join('') || `<tr><td colspan="3" style="color:#93A2A9; font-style:italic;">Belum ada pengguna. Buat dulu di dashboard Supabase, lalu klik Segarkan Daftar.</td></tr>`;
+
+  body.querySelectorAll('tr').forEach(row=>{
+    const saveBtn = row.querySelector('.user-save-btn');
+    if(!saveBtn) return;
+    saveBtn.addEventListener('click', async ()=>{
+      const id = row.dataset.id;
+      const namaBaru = row.querySelector('.user-name-input').value;
+      const roleBaru = row.querySelector('.user-role-select').value;
+      const { error } = await sb.from('profiles').update({ full_name: namaBaru, role: roleBaru }).eq('id', id);
+      if(error){ alert('Gagal menyimpan: ' + error.message); return; }
+      saveBtn.textContent = 'Tersimpan ✓';
+      setTimeout(()=> saveBtn.textContent = 'Simpan', 1500);
+    });
+  });
+}
+
+document.getElementById('adminRefreshUsersBtn').addEventListener('click', loadAndRenderUsers);
+
+// ---------- Bootstrap ----------
+async function init(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(session){ await loadCurrentProfile(); } else { renderAuthWidget(); }
+
+  await Promise.all([loadAlat(), loadBahan(), loadReagen(), loadJadwal(), loadInstrumen(), loadPeminjamanPublik()]);
+
+  renderAlat();
+  populateSelectAlat();
+  renderBahan();
+  renderReagen();
+  renderJadwal();
+  renderInstrumentGrid();
+  populateSelectUji();
+  await updateRekapView();
+  await updateAdminPanelView();
+}
+init();
+
+</script>
+</body>
+</html>
